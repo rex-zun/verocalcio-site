@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VeroCalcio — Jerseys & Streetwear</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #080808;
+  --white: #f5f0ea;
+  --cream: #e8e0d4;
+  --red: #c8102e;
+  --red-dark: #a00c24;
+  --gold: #d4a843;
+  --mid: #111111;
+  --mid2: #161616;
+  --border: rgba(245,240,234,0.08);
+  --border2: rgba(245,240,234,0.15);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--black);color:var(--white);font-family:'Syne',sans-serif;overflow-x:hidden;cursor:none;}
+
+/* CURSOR */
+.cursor{position:fixed;width:8px;height:8px;background:var(--red);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s;}
+.cursor-ring{position:fixed;width:32px;height:32px;border:1px solid rgba(200,16,46,0.5);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:all 0.15s ease;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:22px 48px;transition:background 0.3s,backdrop-filter 0.3s;}
+.nav-scrolled{background:rgba(8,8,8,0.97)!important;backdrop-filter:blur(12px)!important;}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--white);text-decoration:none;}
+.nav-logo span{color:var(--red);}
+.nav-links{display:flex;gap:36px;list-style:none;}
+.nav-links a{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,234,0.55);text-decoration:none;transition:color 0.2s;cursor:none;}
+.nav-links a:hover{color:var(--white);}
+.nav-right{display:flex;align-items:center;gap:16px;}
+.cart-btn{position:relative;background:none;border:1px solid var(--border2);color:var(--white);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:9px 20px;cursor:none;transition:border-color 0.2s,background 0.2s;}
+.cart-btn:hover{border-color:var(--red);background:rgba(200,16,46,0.08);}
+.cart-count{position:absolute;top:-6px;right:-6px;width:18px;height:18px;background:var(--red);border-radius:50%;font-size:9px;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;}
+.admin-btn{background:none;border:none;color:rgba(245,240,234,0.3);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;cursor:none;transition:color 0.2s;padding:9px 12px;}
+.admin-btn:hover{color:var(--white);}
+
+/* PAGES */
+.page{display:none;}
+.page.active{display:block;}
+
+/* ===================== STORE PAGE ===================== */
+/* HERO */
+.hero{min-height:100vh;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:0 48px 80px;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 75% 40%,rgba(200,16,46,0.1) 0%,transparent 70%),linear-gradient(160deg,#0d0d0d 0%,#080808 100%);}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(245,240,234,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(245,240,234,0.025) 1px,transparent 1px);background-size:80px 80px;mask-image:linear-gradient(to bottom,transparent 0%,black 30%,black 70%,transparent 100%);}
+.hero-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;color:var(--red);text-transform:uppercase;margin-bottom:20px;opacity:0;animation:fadeUp 0.8s 0.3s forwards;}
+.hero-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(80px,12vw,175px);line-height:0.9;letter-spacing:2px;opacity:0;animation:fadeUp 0.9s 0.5s forwards;}
+.hero-title .outline{display:block;color:transparent;-webkit-text-stroke:1.5px rgba(245,240,234,0.2);padding-left:80px;}
+.hero-sub{display:flex;align-items:center;gap:48px;margin-top:36px;opacity:0;animation:fadeUp 0.9s 0.8s forwards;}
+.hero-sub p{max-width:300px;font-size:13px;line-height:1.8;color:rgba(245,240,234,0.45);}
+.hero-sub p strong{color:var(--white);}
+.hero-cta{display:inline-flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--white);background:var(--red);border:none;padding:15px 30px;cursor:none;transition:background 0.2s,transform 0.2s;}
+.hero-cta:hover{background:var(--red-dark);transform:translateY(-2px);}
+
+/* MARQUEE */
+.marquee-wrap{background:var(--red);padding:13px 0;overflow:hidden;white-space:nowrap;}
+.marquee-track{display:inline-flex;animation:marquee 18s linear infinite;}
+.marquee-item{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:4px;padding:0 36px;color:rgba(245,240,234,0.88);}
+.marquee-dot{color:rgba(245,240,234,0.35);}
+
+/* SHOP SECTION */
+.shop-section{padding:100px 48px;}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:56px;}
+.section-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--red);margin-bottom:12px;}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,5vw,64px);letter-spacing:2px;line-height:1;}
+.filter-tabs{display:flex;gap:2px;}
+.filter-tab{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:8px 16px;background:none;border:1px solid var(--border);color:rgba(245,240,234,0.4);cursor:none;transition:all 0.2s;}
+.filter-tab.active,.filter-tab:hover{background:var(--red);border-color:var(--red);color:var(--white);}
+
+/* PRODUCTS GRID */
+.products-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;}
+.product-card{position:relative;overflow:hidden;background:var(--mid);cursor:none;display:flex;flex-direction:column;}
+.product-img-wrap{aspect-ratio:3/4;position:relative;overflow:hidden;background:var(--mid2);display:flex;align-items:center;justify-content:center;}
+.product-img-wrap svg{transition:transform 0.7s cubic-bezier(0.25,0.46,0.45,0.94);}
+.product-card:hover .product-img-wrap svg{transform:scale(1.06);}
+.product-badge{position:absolute;top:14px;left:14px;background:var(--red);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;padding:4px 10px;text-transform:uppercase;z-index:1;}
+.product-info-bottom{padding:18px 18px 20px;}
+.product-cat{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:5px;}
+.product-name-text{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--white);margin-bottom:4px;}
+.product-price-text{font-family:'DM Mono',monospace;font-size:11px;color:rgba(245,240,234,0.45);}
+.product-actions{display:flex;gap:2px;padding:0 18px 18px;}
+.size-select{flex:1;background:var(--mid2);border:1px solid var(--border);color:rgba(245,240,234,0.6);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;padding:8px 10px;cursor:none;outline:none;}
+.size-select option{background:var(--black);}
+.add-cart-btn{background:var(--red);border:none;color:var(--white);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:8px 16px;cursor:none;transition:background 0.2s;white-space:nowrap;}
+.add-cart-btn:hover{background:var(--red-dark);}
+.add-cart-btn.added{background:#1a7a3a;}
+
+/* BRAND STORY */
+.brand-story{padding:80px 48px 100px;border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.brand-text h2{margin-bottom:24px;}
+.brand-text p{font-size:14px;line-height:1.85;color:rgba(245,240,234,0.45);margin-bottom:18px;}
+.brand-text p strong{color:var(--white);}
+
+/* CATEGORIES STRIP */
+.cat-strip{padding:0 48px 100px;display:grid;grid-template-columns:repeat(5,1fr);gap:2px;}
+.cat-pill{background:var(--mid);border:1px solid var(--border);padding:24px 20px;text-align:center;cursor:none;transition:border-color 0.2s,background 0.2s;}
+.cat-pill:hover{border-color:var(--red);background:rgba(200,16,46,0.06);}
+.cat-pill-icon{font-size:24px;margin-bottom:8px;}
+.cat-pill-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--white);display:block;}
+.cat-pill-count{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:rgba(245,240,234,0.3);text-transform:uppercase;}
+
+/* NEWSLETTER */
+.newsletter{margin:0 48px 80px;background:var(--red);padding:72px 72px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;position:relative;overflow:hidden;}
+.newsletter::before{content:'VC';font-family:'Bebas Neue',sans-serif;font-size:260px;letter-spacing:-10px;color:rgba(245,240,234,0.05);position:absolute;right:-20px;top:50%;transform:translateY(-50%);line-height:1;}
+.newsletter h2{font-family:'Bebas Neue',sans-serif;font-size:48px;letter-spacing:2px;line-height:1;margin-bottom:12px;}
+.newsletter p{font-size:13px;line-height:1.7;color:rgba(245,240,234,0.7);}
+.nl-form{display:flex;flex-direction:column;gap:10px;position:relative;z-index:1;}
+.nl-input{background:rgba(245,240,234,0.1);border:1px solid rgba(245,240,234,0.2);color:var(--white);font-family:'DM Mono',monospace;font-size:12px;padding:14px 18px;outline:none;transition:border-color 0.2s;}
+.nl-input::placeholder{color:rgba(245,240,234,0.35);}
+.nl-input:focus{border-color:rgba(245,240,234,0.6);}
+.nl-submit{background:var(--white);color:var(--red);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;border:none;padding:14px;cursor:none;font-weight:600;transition:background 0.2s,color 0.2s;}
+.nl-submit:hover{background:var(--black);color:var(--white);}
+
+/* FOOTER */
+footer{padding:72px 48px 36px;border-top:1px solid var(--border);}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:56px;margin-bottom:56px;}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:4px;margin-bottom:14px;}
+.footer-logo span{color:var(--red);}
+.footer-desc{font-size:12px;line-height:1.7;color:rgba(245,240,234,0.3);max-width:240px;}
+.footer-col h4{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,234,0.35);margin-bottom:18px;}
+.footer-col ul{list-style:none;}
+.footer-col ul li{margin-bottom:10px;}
+.footer-col ul a{font-size:12px;color:rgba(245,240,234,0.45);text-decoration:none;transition:color 0.2s;cursor:none;}
+.footer-col ul a:hover{color:var(--white);}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:28px;border-top:1px solid var(--border);}
+.footer-copy{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(245,240,234,0.18);text-transform:uppercase;}
+.footer-socials{display:flex;gap:20px;}
+.footer-socials a{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,234,0.28);text-decoration:none;transition:color 0.2s;cursor:none;}
+.footer-socials a:hover{color:var(--white);}
+
+/* ===================== CART SIDEBAR ===================== */
+.cart-overlay{position:fixed;inset:0;background:rgba(8,8,8,0.7);z-index:800;opacity:0;pointer-events:none;transition:opacity 0.3s;backdrop-filter:blur(4px);}
+.cart-overlay.open{opacity:1;pointer-events:all;}
+.cart-sidebar{position:fixed;top:0;right:0;bottom:0;width:420px;background:var(--mid);z-index:801;transform:translateX(100%);transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);display:flex;flex-direction:column;}
+.cart-sidebar.open{transform:translateX(0);}
+.cart-header{padding:28px 28px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.cart-header h3{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;}
+.cart-close{background:none;border:none;color:var(--white);font-size:22px;cursor:none;opacity:0.5;transition:opacity 0.2s;}
+.cart-close:hover{opacity:1;}
+.cart-items{flex:1;overflow-y:auto;padding:20px 28px;}
+.cart-items::-webkit-scrollbar{width:3px;}
+.cart-items::-webkit-scrollbar-track{background:transparent;}
+.cart-items::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.cart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:12px;}
+.cart-empty p{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:rgba(245,240,234,0.25);text-transform:uppercase;}
+.cart-item{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--border);}
+.cart-item-img{width:70px;height:80px;background:var(--mid2);display:flex;align-items:center;justify-content:center;flex-shrink:0;border:1px solid var(--border);}
+.cart-item-details{flex:1;}
+.cart-item-name{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:var(--white);display:block;margin-bottom:3px;}
+.cart-item-size{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;color:rgba(245,240,234,0.35);text-transform:uppercase;display:block;margin-bottom:8px;}
+.cart-item-controls{display:flex;align-items:center;gap:10px;}
+.qty-btn{width:24px;height:24px;background:var(--mid2);border:1px solid var(--border);color:var(--white);font-size:14px;display:flex;align-items:center;justify-content:center;cursor:none;transition:border-color 0.2s;}
+.qty-btn:hover{border-color:var(--red);}
+.qty-num{font-family:'DM Mono',monospace;font-size:12px;min-width:20px;text-align:center;}
+.cart-item-price{font-family:'DM Mono',monospace;font-size:12px;color:rgba(245,240,234,0.6);align-self:flex-start;margin-top:2px;}
+.remove-item{background:none;border:none;color:rgba(245,240,234,0.2);font-size:16px;cursor:none;margin-left:auto;transition:color 0.2s;align-self:flex-start;}
+.remove-item:hover{color:var(--red);}
+.cart-footer{padding:20px 28px 28px;border-top:1px solid var(--border);}
+.cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.cart-total-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,234,0.4);}
+.cart-total-price{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--white);}
+.cart-total-sub{font-family:'DM Mono',monospace;font-size:9px;color:rgba(245,240,234,0.25);margin-bottom:18px;letter-spacing:1px;}
+.checkout-btn{width:100%;background:var(--red);border:none;color:var(--white);font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;padding:16px;cursor:none;transition:background 0.2s;}
+.checkout-btn:hover{background:var(--red-dark);}
+
+/* ===================== CHECKOUT PAGE ===================== */
+.checkout-page{padding:120px 48px 80px;max-width:900px;margin:0 auto;}
+.checkout-page h1{font-family:'Bebas Neue',sans-serif;font-size:56px;letter-spacing:2px;margin-bottom:8px;}
+.checkout-sub{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,234,0.35);margin-bottom:48px;}
+.checkout-grid{display:grid;grid-template-columns:1fr 380px;gap:40px;align-items:start;}
+.form-section h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.form-group{margin-bottom:16px;}
+.form-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,234,0.4);display:block;margin-bottom:7px;}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--mid);border:1px solid var(--border2);color:var(--white);font-family:'Syne',sans-serif;font-size:13px;padding:13px 16px;outline:none;transition:border-color 0.2s;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--red);}
+.form-input::placeholder{color:rgba(245,240,234,0.25);}
+.form-textarea{resize:vertical;min-height:90px;}
+.form-select{cursor:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='rgba(245,240,234,0.4)' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;background-color:var(--mid);}
+.form-select option{background:var(--black);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.payment-method{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1px solid var(--border);margin-bottom:10px;cursor:none;transition:border-color 0.2s;}
+.payment-method.selected{border-color:var(--red);background:rgba(200,16,46,0.06);}
+.payment-radio{width:16px;height:16px;border-radius:50%;border:1px solid var(--border2);background:none;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.payment-radio.checked::after{content:'';width:8px;height:8px;background:var(--red);border-radius:50%;display:block;}
+.payment-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,234,0.6);}
+.place-order-btn{width:100%;background:var(--red);border:none;color:var(--white);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:3px;text-transform:uppercase;padding:18px;cursor:none;transition:background 0.2s;margin-top:24px;font-weight:500;}
+.place-order-btn:hover{background:var(--red-dark);}
+
+/* ORDER SUMMARY PANEL */
+.order-summary{background:var(--mid);border:1px solid var(--border);padding:28px;position:sticky;top:100px;}
+.order-summary h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.summary-item{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);}
+.summary-item-name{font-size:13px;color:var(--white);}
+.summary-item-meta{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:rgba(245,240,234,0.3);margin-top:3px;}
+.summary-item-price{font-family:'DM Mono',monospace;font-size:12px;color:rgba(245,240,234,0.6);}
+.summary-line{display:flex;justify-content:space-between;align-items:center;padding:8px 0;}
+.summary-line-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,234,0.35);}
+.summary-line-val{font-family:'DM Mono',monospace;font-size:11px;color:rgba(245,240,234,0.55);}
+.summary-total{display:flex;justify-content:space-between;align-items:center;padding:16px 0 0;border-top:1px solid var(--border);margin-top:8px;}
+.summary-total-label{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;}
+.summary-total-price{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1px;color:var(--red);}
+
+/* ===================== SUCCESS PAGE ===================== */
+.success-page{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px;}
+.success-icon{width:80px;height:80px;background:rgba(26,122,58,0.15);border:1px solid rgba(26,122,58,0.4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 28px;}
+.success-page h1{font-family:'Bebas Neue',sans-serif;font-size:56px;letter-spacing:3px;margin-bottom:8px;}
+.success-page p{font-size:14px;line-height:1.7;color:rgba(245,240,234,0.5);max-width:400px;margin:0 auto 32px;}
+.order-id-badge{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:3px;background:var(--mid);border:1px solid var(--border2);padding:12px 24px;margin-bottom:32px;color:var(--red);}
+.back-shop-btn{display:inline-flex;align-items:center;gap:10px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--white);background:none;border:1px solid var(--border2);padding:14px 28px;cursor:none;transition:border-color 0.2s,background 0.2s;}
+.back-shop-btn:hover{border-color:var(--red);background:rgba(200,16,46,0.06);}
+
+/* ===================== ADMIN PAGE ===================== */
+.admin-page{min-height:100vh;padding:100px 0 0;display:flex;}
+.admin-sidebar{width:240px;background:var(--mid);border-right:1px solid var(--border);padding:32px 0;flex-shrink:0;position:sticky;top:72px;height:calc(100vh - 72px);}
+.admin-logo{padding:0 24px 24px;border-bottom:1px solid var(--border);margin-bottom:24px;}
+.admin-logo span{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,234,0.3);}
+.admin-nav-item{display:flex;align-items:center;gap:12px;padding:12px 24px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,234,0.4);cursor:none;transition:all 0.2s;border-left:2px solid transparent;}
+.admin-nav-item:hover,.admin-nav-item.active{color:var(--white);background:rgba(245,240,234,0.04);border-left-color:var(--red);}
+.admin-nav-item .dot{width:6px;height:6px;border-radius:50%;background:var(--red);display:none;}
+.admin-nav-item.has-new .dot{display:block;}
+.admin-content{flex:1;padding:40px 48px;overflow-y:auto;}
+.admin-panel{display:none;}
+.admin-panel.active{display:block;}
+.admin-panel-title{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:2px;margin-bottom:8px;}
+.admin-panel-sub{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;color:rgba(245,240,234,0.3);margin-bottom:36px;text-transform:uppercase;}
+
+/* ADMIN STATS */
+.admin-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-bottom:40px;}
+.stat-card{background:var(--mid);border:1px solid var(--border);padding:24px;}
+.stat-card-num{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:2px;color:var(--white);line-height:1;margin-bottom:4px;}
+.stat-card-num span{color:var(--red);}
+.stat-card-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,234,0.3);}
+
+/* ORDERS TABLE */
+.table-wrap{background:var(--mid);border:1px solid var(--border);overflow:hidden;margin-bottom:40px;}
+.table-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border);}
+.table-header h3{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;}
+.table-search{background:var(--mid2);border:1px solid var(--border);color:var(--white);font-family:'DM Mono',monospace;font-size:10px;padding:8px 14px;outline:none;letter-spacing:1px;width:200px;}
+.table-search::placeholder{color:rgba(245,240,234,0.25);}
+table{width:100%;border-collapse:collapse;}
+th{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,234,0.3);padding:12px 20px;text-align:left;border-bottom:1px solid var(--border);background:rgba(245,240,234,0.02);}
+td{padding:14px 20px;font-size:12px;border-bottom:1px solid var(--border);color:rgba(245,240,234,0.7);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(245,240,234,0.02);}
+.order-id-cell{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--red);}
+.status-badge{display:inline-block;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:2px;}
+.status-new{background:rgba(200,16,46,0.15);color:#f06080;border:1px solid rgba(200,16,46,0.25);}
+.status-processing{background:rgba(212,168,67,0.12);color:#d4a843;border:1px solid rgba(212,168,67,0.25);}
+.status-delivered{background:rgba(26,122,58,0.12);color:#4caf70;border:1px solid rgba(26,122,58,0.25);}
+.action-btn-sm{background:none;border:1px solid var(--border);color:rgba(245,240,234,0.4);font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;cursor:none;transition:all 0.2s;margin-right:4px;}
+.action-btn-sm:hover{border-color:var(--red);color:var(--white);}
+.action-btn-sm.del:hover{border-color:#f06080;color:#f06080;}
+
+/* ADD PRODUCT FORM */
+.add-product-form{background:var(--mid);border:1px solid var(--border);padding:32px;margin-bottom:40px;}
+.add-product-form h3{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.img-upload-area{border:1px dashed var(--border2);padding:32px;text-align:center;cursor:none;transition:border-color 0.2s;}
+.img-upload-area:hover{border-color:var(--red);}
+.img-upload-area p{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,234,0.3);margin-bottom:8px;}
+.img-upload-area input[type=file]{display:none;}
+.img-upload-area label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;background:var(--red);color:var(--white);padding:8px 18px;cursor:pointer;}
+.save-product-btn{background:var(--red);border:none;color:var(--white);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:14px 32px;cursor:none;transition:background 0.2s;}
+.save-product-btn:hover{background:var(--red-dark);}
+.cancel-btn{background:none;border:1px solid var(--border);color:rgba(245,240,234,0.4);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:14px 24px;cursor:none;transition:all 0.2s;margin-right:8px;}
+.cancel-btn:hover{border-color:var(--white);color:var(--white);}
+
+/* PRODUCT MANAGER TABLE */
+.product-row-img{width:44px;height:50px;background:var(--mid2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;}
+.toggle-btn{width:40px;height:22px;background:var(--mid2);border:1px solid var(--border);border-radius:11px;position:relative;cursor:none;transition:background 0.2s;}
+.toggle-btn.on{background:rgba(26,122,58,0.5);border-color:rgba(26,122,58,0.5);}
+.toggle-btn::after{content:'';position:absolute;top:3px;left:3px;width:14px;height:14px;background:rgba(245,240,234,0.4);border-radius:50%;transition:transform 0.2s,background 0.2s;}
+.toggle-btn.on::after{transform:translateX(18px);background:#4caf70;}
+
+/* ORDER DETAIL MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(8,8,8,0.85);z-index:900;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;backdrop-filter:blur(6px);}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--mid);border:1px solid var(--border2);width:560px;max-height:80vh;overflow-y:auto;padding:36px;}
+.modal h3{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;margin-bottom:20px;}
+.modal-section{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.modal-label{font-family:'DM Mono',monospace;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,234,0.3);margin-bottom:4px;}
+.modal-value{font-size:13px;color:var(--white);}
+.modal-actions{display:flex;gap:8px;margin-top:20px;}
+.modal-status-btn{flex:1;padding:11px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);background:none;color:rgba(245,240,234,0.4);cursor:none;transition:all 0.2s;}
+.modal-status-btn:hover{border-color:var(--red);color:var(--white);}
+.modal-close-btn{padding:11px 20px;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border:none;background:var(--red);color:var(--white);cursor:none;}
+
+/* ADMIN LOGIN */
+.admin-login{min-height:100vh;display:flex;align-items:center;justify-content:center;}
+.login-box{width:380px;padding:48px;background:var(--mid);border:1px solid var(--border);}
+.login-box h2{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;margin-bottom:6px;}
+.login-box p{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:rgba(245,240,234,0.3);margin-bottom:32px;}
+.login-btn{width:100%;background:var(--red);border:none;color:var(--white);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:14px;cursor:none;transition:background 0.2s;margin-top:16px;}
+.login-btn:hover{background:var(--red-dark);}
+.login-err{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;color:#f06080;margin-top:10px;display:none;}
+
+/* NOTIFICATION TOAST */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--mid);border:1px solid var(--border2);padding:14px 28px;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;z-index:999;transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);white-space:nowrap;}
+.toast.show{transform:translateX(-50%) translateY(0);}
+.toast .t-icon{color:var(--red);margin-right:10px;}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><span class="t-icon">✦</span><span id="toastMsg">Added to cart</span></div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <a href="#" class="nav-logo" onclick="showPage('store');return false;">VERO<span>CALCIO</span></a>
+  <ul class="nav-links">
+    <li><a href="#" onclick="showPage('store');scrollTo('#shopSection');return false;">Jerseys</a></li>
+    <li><a href="#" onclick="showPage('store');scrollTo('#shopSection');return false;">Streetwear</a></li>
+    <li><a href="#" onclick="showPage('store');scrollTo('#storySection');return false;">About</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="cart-btn" onclick="openCart()">🛒 Cart <span class="cart-count" id="cartCount">0</span></button>
+    <button class="admin-btn" onclick="showPage('adminLogin')">Admin ⚙</button>
+  </div>
+</nav>
+
+<!-- ===================== STORE PAGE ===================== -->
+<div class="page active" id="page-store">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-label">— New Drop Available Now</div>
+    <h1 class="hero-title">VERO<br><span class="outline">CALCIO</span></h1>
+    <div class="hero-sub">
+      <p>Premium jerseys &amp; streetwear crafted for those who live <strong>at the intersection of football culture and street fashion.</strong></p>
+      <button class="hero-cta" onclick="document.getElementById('shopSection').scrollIntoView({behavior:'smooth'})">Shop Collection →</button>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span class="marquee-item">JERSEYS</span><span class="marquee-item marquee-dot">✦</span>
+      <span class="marquee-item">STREETWEAR</span><span class="marquee-item marquee-dot">✦</span>
+      <span class="marquee-item">MADE IN DHAKA</span><span class="marquee-item marquee-dot">✦</span>
+      <span class="marquee-item">PREMIUM QUALITY</span><span class="marquee-item marquee-dot">✦</span>
+      <span class="marquee-item">VEROCALCIO</span><span class="marquee-item marquee-dot">✦</span>
+      <span class="marquee-item">JERSEYS</span><span class="marquee-item marquee-dot">✦</span>
+      <span class="marquee-item">STREETWEAR</span><span class="marquee-item marquee-dot">✦</span>
+      <span class="marquee-item">MADE IN DHAKA</span><span class="marquee-item marquee-dot">✦</span>
+      <span class="marquee-item">PREMIUM QUALITY</span><span class="marquee-item marquee-dot">✦</span>
+      <span class="marquee-item">VEROCALCIO</span><span class="marquee-item marquee-dot">✦</span>
+    </div>
+  </div>
+
+  <!-- SHOP -->
+  <section class="shop-section" id="shopSection">
+    <div class="section-head reveal">
+      <div>
+        <div class="section-label">// Products</div>
+        <h2 class="section-title">Shop Collection</h2>
+      </div>
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterProducts('all',this)">All</button>
+        <button class="filter-tab" onclick="filterProducts('jersey',this)">Jerseys</button>
+        <button class="filter-tab" onclick="filterProducts('streetwear',this)">Streetwear</button>
+        <button class="filter-tab" onclick="filterProducts('accessories',this)">Accessories</button>
+      </div>
+    </div>
+    <div class="products-grid reveal" id="productsGrid"></div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <div class="cat-strip reveal">
+    <div class="cat-pill" onclick="filterProducts('jersey',null);document.getElementById('shopSection').scrollIntoView({behavior:'smooth'})">
+      <div class="cat-pill-icon">👕</div>
+      <span class="cat-pill-name">Jerseys</span>
+      <span class="cat-pill-count">Shop Now</span>
+    </div>
+    <div class="cat-pill" onclick="filterProducts('streetwear',null);document.getElementById('shopSection').scrollIntoView({behavior:'smooth'})">
+      <div class="cat-pill-icon">🧥</div>
+      <span class="cat-pill-name">Hoodies</span>
+      <span class="cat-pill-count">Shop Now</span>
+    </div>
+    <div class="cat-pill" onclick="filterProducts('accessories',null);document.getElementById('shopSection').scrollIntoView({behavior:'smooth'})">
+      <div class="cat-pill-icon">🧢</div>
+      <span class="cat-pill-name">Caps</span>
+      <span class="cat-pill-count">Shop Now</span>
+    </div>
+    <div class="cat-pill" onclick="filterProducts('streetwear',null);document.getElementById('shopSection').scrollIntoView({behavior:'smooth'})">
+      <div class="cat-pill-icon">👚</div>
+      <span class="cat-pill-name">Tees</span>
+      <span class="cat-pill-count">Shop Now</span>
+    </div>
+    <div class="cat-pill">
+      <div class="cat-pill-icon">🩳</div>
+      <span class="cat-pill-name">Shorts</span>
+      <span class="cat-pill-count">Coming Soon</span>
+    </div>
+  </div>
+
+  <!-- BRAND STORY -->
+  <section class="brand-story" id="storySection">
+    <div class="reveal">
+      <div class="section-label">// Our Story</div>
+      <h2 class="section-title">Born in Dhaka.<br>Built for the World.</h2>
+      <p style="margin-top:24px">VeroCalcio started with one idea — that Bangladesh deserves a <strong>world-class football and streetwear brand.</strong> No more settling for generic, no more choosing between quality and local pride.</p>
+      <p>Every piece we make is a statement. From the weight of the fabric to the precision of the print — we obsess over every detail so you don't have to.</p>
+    </div>
+    <div class="reveal" style="background:var(--mid);border:1px solid var(--border);padding:48px;display:flex;flex-direction:column;gap:20px;">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:56px;letter-spacing:2px;line-height:1;color:var(--red);">VC</div>
+      <p style="font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:rgba(245,240,234,0.3);text-transform:uppercase;line-height:1.8;">Premium jerseys &amp; streetwear.<br>Dhaka, Bangladesh.<br>verocalcio.com</p>
+      <div style="height:1px;background:var(--border);"></div>
+      <p style="font-size:13px;color:rgba(245,240,234,0.4);line-height:1.7;">Authentic. Local. Uncompromising. We are VeroCalcio.</p>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <div class="newsletter reveal">
+    <div>
+      <h2>Get Early Access<br>to Every Drop.</h2>
+      <p>Join the VeroCalcio community. Be the first to know about new jerseys, limited editions, and exclusive streetwear releases straight from Dhaka.</p>
+    </div>
+    <div class="nl-form">
+      <input class="nl-input" type="text" placeholder="Your Name">
+      <input class="nl-input" type="email" placeholder="Email Address">
+      <input class="nl-input" type="tel" placeholder="Phone (Bangladesh)">
+      <button class="nl-submit" onclick="showToast('You\'re on the list! ✦')">Join the List →</button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">VERO<span>CALCIO</span></div>
+        <p class="footer-desc">Premium jerseys &amp; streetwear. Born in Dhaka, Bangladesh. Made for the world.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Shop</h4>
+        <ul>
+          <li><a href="#">Jerseys</a></li>
+          <li><a href="#">Hoodies</a></li>
+          <li><a href="#">T-Shirts</a></li>
+          <li><a href="#">Caps</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Brand</h4>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Lookbook</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Help</h4>
+        <ul>
+          <li><a href="#">Sizing Guide</a></li>
+          <li><a href="#">Shipping — BD</a></li>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2024 VeroCalcio · Dhaka, Bangladesh · All Rights Reserved</span>
+      <div class="footer-socials">
+        <a href="#">Instagram</a>
+        <a href="#">Facebook</a>
+        <a href="#">TikTok</a>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ===================== CHECKOUT PAGE ===================== -->
+<div class="page" id="page-checkout">
+  <div class="checkout-page">
+    <h1>Checkout</h1>
+    <p class="checkout-sub">// Fill in your details — we'll deliver to you</p>
+    <div class="checkout-grid">
+      <div class="form-section">
+        <h3>Your Details</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input class="form-input" id="c_name" type="text" placeholder="e.g. Rahim Hossain">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone Number *</label>
+            <input class="form-input" id="c_phone" type="tel" placeholder="01X-XXXX-XXXX">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input class="form-input" id="c_email" type="email" placeholder="your@email.com">
+        </div>
+        <div class="form-group" style="margin-top:28px;">
+          <h3 style="margin-bottom:20px;">Delivery Address</h3>
+          <label class="form-label">Street Address *</label>
+          <input class="form-input" id="c_address" type="text" placeholder="House/Road/Area">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">City / District *</label>
+            <select class="form-select" id="c_city">
+              <option value="">Select City</option>
+              <option>Dhaka</option><option>Chittagong</option><option>Sylhet</option>
+              <option>Rajshahi</option><option>Khulna</option><option>Barisal</option>
+              <option>Rangpur</option><option>Mymensingh</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Postal Code</label>
+            <input class="form-input" id="c_postal" type="text" placeholder="e.g. 1205">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Order Notes (optional)</label>
+          <textarea class="form-textarea" id="c_notes" placeholder="Special instructions, colour preference, etc."></textarea>
+        </div>
+        <div style="margin-top:28px;">
+          <h3 style="margin-bottom:20px;">Payment Method</h3>
+          <div class="payment-method selected" id="pm_cod" onclick="selectPayment('cod')">
+            <div class="payment-radio checked" id="pr_cod"></div>
+            <span class="payment-label">Cash on Delivery (COD)</span>
+          </div>
+          <div class="payment-method" id="pm_bkash" onclick="selectPayment('bkash')">
+            <div class="payment-radio" id="pr_bkash"></div>
+            <span class="payment-label">bKash / Nagad / Rocket</span>
+          </div>
+        </div>
+        <button class="place-order-btn" onclick="placeOrder()">Place Order →</button>
+      </div>
+      <div>
+        <div class="order-summary">
+          <h3>Order Summary</h3>
+          <div id="summaryItems"></div>
+          <div class="summary-line"><span class="summary-line-label">Subtotal</span><span class="summary-line-val" id="summarySubtotal">৳0</span></div>
+          <div class="summary-line"><span class="summary-line-label">Delivery</span><span class="summary-line-val">৳80</span></div>
+          <div class="summary-total"><span class="summary-total-label">Total</span><span class="summary-total-price" id="summaryTotal">৳80</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SUCCESS PAGE ===================== -->
+<div class="page" id="page-success">
+  <div class="success-page">
+    <div class="success-icon">✓</div>
+    <h1>Order Placed!</h1>
+    <p>Thank you for your order. We've received it and will confirm via WhatsApp or phone shortly.</p>
+    <div class="order-id-badge" id="successOrderId">ORDER #VC-0000</div>
+    <button class="back-shop-btn" onclick="showPage('store');resetCart()">← Continue Shopping</button>
+  </div>
+</div>
+
+<!-- ===================== ADMIN LOGIN ===================== -->
+<div class="page" id="page-adminLogin">
+  <div class="admin-login">
+    <div class="login-box">
+      <h2>Admin Panel</h2>
+      <p>// VeroCalcio Store Management</p>
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input class="form-input" id="adminUser" type="text" placeholder="admin">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" id="adminPass" type="password" placeholder="••••••••">
+      </div>
+      <button class="login-btn" onclick="adminLogin()">Login →</button>
+      <p class="login-err" id="loginErr">Incorrect credentials. Try again.</p>
+      <p style="margin-top:20px;font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;color:rgba(245,240,234,0.2);">Default:  / </p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== ADMIN PAGE ===================== -->
+<div class="page" id="page-admin">
+  <div class="admin-page">
+    <div class="admin-sidebar">
+      <div class="admin-logo">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:3px;">VERO<span style="color:var(--red)">CALCIO</span></div>
+        <span>Admin Panel</span>
+      </div>
+      <div class="admin-nav-item active has-new" onclick="switchAdminPanel('orders',this)"><span class="dot"></span>Orders</div>
+      <div class="admin-nav-item" onclick="switchAdminPanel('products',this)">Products</div>
+      <div class="admin-nav-item" onclick="switchAdminPanel('addproduct',this)">Add Product</div>
+      <div class="admin-nav-item" style="margin-top:auto;border-top:1px solid var(--border);padding-top:16px;" onclick="showPage('store')">← Back to Store</div>
+    </div>
+    <div class="admin-content">
+
+      <!-- ORDERS PANEL -->
+      <div class="admin-panel active" id="panel-orders">
+        <div class="admin-panel-title">Orders</div>
+        <p class="admin-panel-sub">// All customer orders — real time</p>
+        <div class="admin-stats" id="adminStats">
+          <div class="stat-card"><div class="stat-card-num" id="statTotal">0</div><div class="stat-card-label">Total Orders</div></div>
+          <div class="stat-card"><div class="stat-card-num" style="color:var(--red)" id="statNew">0</div><div class="stat-card-label">New Orders</div></div>
+          <div class="stat-card"><div class="stat-card-num" id="statRevenue">৳0</div><div class="stat-card-label">Revenue</div></div>
+          <div class="stat-card"><div class="stat-card-num" id="statProducts">0</div><div class="stat-card-label">Products</div></div>
+        </div>
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>All Orders</h3>
+            <input class="table-search" type="text" placeholder="Search by name..." id="orderSearch" oninput="renderOrdersTable()">
+          </div>
+          <table>
+            <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Total</th><th>City</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="ordersTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- PRODUCTS PANEL -->
+      <div class="admin-panel" id="panel-products">
+        <div class="admin-panel-title">Products</div>
+        <p class="admin-panel-sub">// Manage your product catalog</p>
+        <div class="table-wrap">
+          <div class="table-header">
+            <h3>All Products</h3>
+            <button class="save-product-btn" onclick="switchAdminPanel('addproduct',null)">+ Add Product</button>
+          </div>
+          <table>
+            <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Sizes</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody id="productsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ADD PRODUCT PANEL -->
+      <div class="admin-panel" id="panel-addproduct">
+        <div class="admin-panel-title" id="addProductTitle">Add Product</div>
+        <p class="admin-panel-sub">// Fill in all details carefully</p>
+        <div class="add-product-form">
+          <input type="hidden" id="editProductId">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Product Name *</label>
+              <input class="form-input" id="p_name" type="text" placeholder="e.g. Classic Away Jersey">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category *</label>
+              <select class="form-select" id="p_cat">
+                <option value="jersey">Jersey</option>
+                <option value="streetwear">Streetwear</option>
+                <option value="accessories">Accessories</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Price (BDT) *</label>
+              <input class="form-input" id="p_price" type="number" placeholder="e.g. 2499">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Badge Label</label>
+              <input class="form-input" id="p_badge" type="text" placeholder="e.g. New, Limited, Sale">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Available Sizes (comma separated)</label>
+              <input class="form-input" id="p_sizes" type="text" placeholder="S, M, L, XL, XXL">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Stock Quantity</label>
+              <input class="form-input" id="p_stock" type="number" placeholder="e.g. 50">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" id="p_desc" placeholder="Describe the product — fabric, fit, design details..."></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Product Image URL</label>
+            <input class="form-input" id="p_img" type="text" placeholder="https://your-image-url.com/product.jpg">
+            <p style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(245,240,234,0.25);margin-top:6px;letter-spacing:1px;">Upload image to imgbb.com or imgur.com and paste the link here</p>
+          </div>
+          <div style="margin-top:20px;display:flex;gap:8px;">
+            <button class="cancel-btn" onclick="switchAdminPanel('products',null);resetProductForm()">Cancel</button>
+            <button class="save-product-btn" onclick="saveProduct()">Save Product</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CART SIDEBAR -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="cart-footer">
+    <div class="cart-total-row">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-price" id="cartTotal">৳0</span>
+    </div>
+    <p class="cart-total-sub">Delivery ৳80 · Cash on Delivery available</p>
+    <button class="checkout-btn" onclick="goCheckout()">Proceed to Checkout →</button>
+  </div>
+</div>
+
+<!-- ORDER DETAIL MODAL -->
+<div class="modal-overlay" id="orderModal" onclick="closeOrderModal(event)">
+  <div class="modal">
+    <h3>Order Details</h3>
+    <div id="modalContent"></div>
+    <div class="modal-actions">
+      <button class="modal-status-btn" onclick="updateOrderStatus('processing')">Mark Processing</button>
+      <button class="modal-status-btn" onclick="updateOrderStatus('delivered')">Mark Delivered</button>
+      <button class="modal-close-btn" onclick="document.getElementById('orderModal').classList.remove('open')">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA STORE
+// ============================================================
+let products = JSON.parse(localStorage.getItem('vc_products') || 'null') || [
+  {id:1,name:'Classic Away Kit',cat:'jersey',price:2499,badge:'New',sizes:'S,M,L,XL,XXL',stock:30,desc:'Clean white away jersey with red VC branding.',img:'',active:true},
+  {id:2,name:'Home Kit Red',cat:'jersey',price:2799,badge:'Limited',sizes:'S,M,L,XL',stock:15,desc:'Bold red home jersey, limited run.',img:'',active:true},
+  {id:3,name:'VC Signature Hoodie',cat:'streetwear',price:3299,badge:'',sizes:'S,M,L,XL,XXL',stock:25,desc:'Premium heavyweight hoodie with embroidered logo.',img:'',active:true},
+  {id:4,name:'Stripe Third Kit',cat:'jersey',price:2599,badge:'',sizes:'M,L,XL',stock:20,desc:'Blue stripe alternate jersey.',img:'',active:true},
+  {id:5,name:'VC Graphic Tee',cat:'streetwear',price:1599,badge:'',sizes:'S,M,L,XL,XXL',stock:40,desc:'100% cotton graphic tee with VC artwork.',img:'',active:true},
+  {id:6,name:'VC Snapback Cap',cat:'accessories',price:1299,badge:'',sizes:'One Size',stock:35,desc:'Red and black snapback with embroidered VC.',img:'',active:true},
+];
+let orders = JSON.parse(localStorage.getItem('vc_orders') || '[]');
+let cart = [];
+let currentFilter = 'all';
+let editingOrderId = null;
+
+function saveData(){
+  localStorage.setItem('vc_products', JSON.stringify(products));
+  localStorage.setItem('vc_orders', JSON.stringify(orders));
+}
+
+// ============================================================
+// JERSEY SVGs (placeholder art)
+// ============================================================
+const jerseySVG = (color='#0a0a0a',accent='#c8102e',num='VC') => `
+<svg viewBox="0 0 140 160" fill="none" xmlns="http://www.w3.org/2000/svg" width="120" height="136">
+  <path d="M30 20 L10 55 L30 60 L30 150 L110 150 L110 60 L130 55 L110 20 L90 30 C85 40 55 40 50 30 Z" fill="${color}" stroke="${accent}" stroke-width="1.5"/>
+  <path d="M50 30 C55 40 85 40 90 30 L90 65 L50 65 Z" fill="${accent}" opacity="0.18"/>
+  <text x="70" y="120" font-family="Bebas Neue,serif" font-size="26" fill="${accent}" text-anchor="middle" letter-spacing="2">${num}</text>
+</svg>`;
+
+const hoodSVG = () => `
+<svg viewBox="0 0 140 180" fill="none" xmlns="http://www.w3.org/2000/svg" width="110" height="140">
+  <path d="M45 25 L20 55 L10 85 L30 90 L30 170 L110 170 L110 90 L130 85 L120 55 L95 25 L80 35 L70 40 L60 35 Z" fill="#111" stroke="#333" stroke-width="1.5"/>
+  <path d="M60 35 L70 40 L80 35 L75 60 L65 60 Z" fill="#1a1a1a" stroke="#c8102e" stroke-width="1"/>
+  <circle cx="70" cy="34" r="7" fill="#0d0d0d" stroke="#c8102e" stroke-width="1"/>
+  <text x="70" y="145" font-family="Bebas Neue,serif" font-size="16" fill="rgba(200,16,46,0.7)" text-anchor="middle" letter-spacing="4">VERO</text>
+</svg>`;
+
+const teeSVG = () => `
+<svg viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg" width="110" height="110">
+  <path d="M35 25 L12 52 L28 62 L28 130 L112 130 L112 62 L128 52 L105 25 L88 38 L70 43 L52 38 Z" fill="#111" stroke="#222" stroke-width="1.5"/>
+  <text x="70" y="100" font-family="Bebas Neue,serif" font-size="16" fill="rgba(200,16,46,0.65)" text-anchor="middle" letter-spacing="4">VERO</text>
+</svg>`;
+
+const capSVG = () => `
+<svg viewBox="0 0 140 110" fill="none" xmlns="http://www.w3.org/2000/svg" width="120" height="90">
+  <path d="M20 70 Q70 28 120 70 L120 82 Q70 48 20 82 Z" fill="#c8102e"/>
+  <path d="M20 70 Q70 28 120 70 L120 90 L20 90 Z" fill="#111" stroke="#c8102e" stroke-width="1"/>
+  <path d="M20 90 L2 90" stroke="#111" stroke-width="7" stroke-linecap="round"/>
+  <text x="70" y="82" font-family="Bebas Neue,serif" font-size="14" fill="rgba(245,240,234,0.4)" text-anchor="middle" letter-spacing="3">VC</text>
+</svg>`;
+
+function getProductSVG(p){
+  if(p.img) return `<img src="${p.img}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'">`;
+  if(p.cat==='jersey') return jerseySVG();
+  if(p.cat==='streetwear' && p.name.toLowerCase().includes('hoodie')) return hoodSVG();
+  if(p.cat==='accessories') return capSVG();
+  return teeSVG();
+}
+function getProductSVGSmall(p){
+  if(p.img) return `<img src="${p.img}" style="width:44px;height:50px;object-fit:cover;">`;
+  if(p.cat==='jersey') return jerseySVG().replace('width="120"','width="36"').replace('height="136"','height="42"');
+  return `<div style="width:36px;height:42px;background:var(--mid2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:rgba(245,240,234,0.2);">IMG</div>`;
+}
+
+// ============================================================
+// PAGE ROUTING
+// ============================================================
+function showPage(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  window.scrollTo(0,0);
+  if(page==='store') renderProducts();
+  if(page==='checkout') renderCheckoutSummary();
+  if(page==='admin'){renderOrdersTable();renderProductsTable();updateAdminStats();}
+}
+
+function scrollTo(id){
+  setTimeout(()=>{const el=document.querySelector(id);if(el)el.scrollIntoView({behavior:'smooth'});},100);
+}
+
+// ============================================================
+// PRODUCTS
+// ============================================================
+function renderProducts(){
+  const grid = document.getElementById('productsGrid');
+  const filtered = currentFilter==='all' ? products.filter(p=>p.active) : products.filter(p=>p.active && p.cat===currentFilter);
+  if(filtered.length===0){
+    grid.innerHTML=`<div style="grid-column:1/-1;padding:60px;text-align:center;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:2px;color:rgba(245,240,234,0.25);text-transform:uppercase;">No products in this category yet.</div>`;
+    return;
+  }
+  grid.innerHTML = filtered.map(p=>{
+    const sizes = p.sizes.split(',').map(s=>s.trim()).filter(Boolean);
+    return `
+    <div class="product-card" data-id="${p.id}">
+      <div class="product-img-wrap">
+        ${p.badge?`<span class="product-badge">${p.badge}</span>`:''}
+        ${getProductSVG(p)}
+      </div>
+      <div class="product-info-bottom">
+        <div class="product-cat">${p.cat}</div>
+        <div class="product-name-text">${p.name}</div>
+        <div class="product-price-text">BDT ${Number(p.price).toLocaleString()}</div>
+      </div>
+      <div class="product-actions">
+        <select class="size-select" id="size_${p.id}">
+          ${sizes.map(s=>`<option>${s}</option>`).join('')}
+        </select>
+        <button class="add-cart-btn" id="addBtn_${p.id}" onclick="addToCart(${p.id})">Add to Cart</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterProducts(cat, btn){
+  currentFilter = cat;
+  document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderProducts();
+}
+
+// ============================================================
+// CART
+// ============================================================
+function addToCart(pid){
+  const p = products.find(x=>x.id===pid);
+  if(!p) return;
+  const size = document.getElementById('size_'+pid)?.value || '';
+  const existing = cart.find(c=>c.id===pid && c.size===size);
+  if(existing){ existing.qty++; }
+  else { cart.push({id:pid,name:p.name,price:p.price,size,qty:1,cat:p.cat,img:p.img}); }
+  updateCartCount();
+  renderCartItems();
+  const btn = document.getElementById('addBtn_'+pid);
+  if(btn){btn.textContent='Added ✓';btn.classList.add('added');setTimeout(()=>{btn.textContent='Add to Cart';btn.classList.remove('added');},1500);}
+  showToast(`${p.name} added to cart`);
+}
+
+function updateCartCount(){
+  const total = cart.reduce((a,c)=>a+c.qty,0);
+  document.getElementById('cartCount').textContent = total;
+}
+
+function cartTotal(){
+  return cart.reduce((a,c)=>a+(c.price*c.qty),0);
+}
+
+function renderCartItems(){
+  const el = document.getElementById('cartItems');
+  if(cart.length===0){
+    el.innerHTML=`<div class="cart-empty"><p>Your cart is empty</p></div>`;
+    document.getElementById('cartTotal').textContent='৳0';
+    return;
+  }
+  el.innerHTML = cart.map((c,i)=>`
+    <div class="cart-item">
+      <div class="cart-item-img">${c.img?`<img src="${c.img}" style="width:100%;height:100%;object-fit:cover;">`:`<svg viewBox="0 0 60 70" width="40" height="46"><path d="M10 8 L4 20 L10 22 L10 62 L50 62 L50 22 L56 20 L50 8 L40 13 C38 17 22 17 20 13Z" fill="#111" stroke="#c8102e" stroke-width="1"/><text x="30" y="46" font-family="Bebas Neue" font-size="10" fill="#c8102e" text-anchor="middle">VC</text></svg>`}</div>
+      <div class="cart-item-details">
+        <span class="cart-item-name">${c.name}</span>
+        <span class="cart-item-size">Size: ${c.size}</span>
+        <div class="cart-item-controls">
+          <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+          <span class="qty-num">${c.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+        </div>
+      </div>
+      <span class="cart-item-price">৳${(c.price*c.qty).toLocaleString()}</span>
+      <button class="remove-item" onclick="removeFromCart(${i})">✕</button>
+    </div>`).join('');
+  document.getElementById('cartTotal').textContent=`৳${cartTotal().toLocaleString()}`;
+}
+
+function changeQty(i, delta){
+  cart[i].qty += delta;
+  if(cart[i].qty < 1) cart.splice(i,1);
+  updateCartCount();
+  renderCartItems();
+}
+function removeFromCart(i){ cart.splice(i,1); updateCartCount(); renderCartItems(); showToast('Item removed'); }
+function openCart(){ document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartSidebar').classList.add('open'); renderCartItems(); }
+function closeCart(){ document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartSidebar').classList.remove('open'); }
+
+function goCheckout(){
+  if(cart.length===0){showToast('Your cart is empty!');return;}
+  closeCart();
+  showPage('checkout');
+}
+
+// ============================================================
+// CHECKOUT
+// ============================================================
+function renderCheckoutSummary(){
+  const el = document.getElementById('summaryItems');
+  el.innerHTML = cart.map(c=>`
+    <div class="summary-item">
+      <div>
+        <div class="summary-item-name">${c.name}</div>
+        <div class="summary-item-meta">Size: ${c.size} · Qty: ${c.qty}</div>
+      </div>
+      <span class="summary-item-price">৳${(c.price*c.qty).toLocaleString()}</span>
+    </div>`).join('');
+  const sub = cartTotal();
+  document.getElementById('summarySubtotal').textContent = `৳${sub.toLocaleString()}`;
+  document.getElementById('summaryTotal').textContent = `৳${(sub+80).toLocaleString()}`;
+}
+
+let selectedPayment = 'cod';
+function selectPayment(method){
+  selectedPayment = method;
+  ['cod','bkash'].forEach(m=>{
+    document.getElementById('pm_'+m).classList.toggle('selected', m===method);
+    document.getElementById('pr_'+m).classList.toggle('checked', m===method);
+  });
+}
+
+function placeOrder(){
+  const name = document.getElementById('c_name').value.trim();
+  const phone = document.getElementById('c_phone').value.trim();
+  const address = document.getElementById('c_address').value.trim();
+  const city = document.getElementById('c_city').value;
+  if(!name||!phone||!address||!city){ showToast('Please fill all required fields ✕'); return; }
+  const orderId = 'VC-' + String(Date.now()).slice(-6);
+  const order = {
+    id: orderId,
+    name, phone,
+    email: document.getElementById('c_email').value,
+    address, city,
+    postal: document.getElementById('c_postal').value,
+    notes: document.getElementById('c_notes').value,
+    payment: selectedPayment,
+    items: [...cart],
+    subtotal: cartTotal(),
+    delivery: 80,
+    total: cartTotal()+80,
+    status: 'new',
+    date: new Date().toLocaleString('en-BD')
+  };
+  orders.unshift(order);
+  saveData();
+  document.getElementById('successOrderId').textContent = `ORDER #${orderId}`;
+  showPage('success');
+}
+
+function resetCart(){ cart=[]; updateCartCount(); }
+
+// ============================================================
+// ADMIN
+// ============================================================
+function adminLogin(){
+  const u = document.getElementById('adminUser').value;
+  const p = document.getElementById('adminPass').value;
+  if(u==='SaqibTurjo' && p==='@SaqibHossain2752#TT100%'){
+    showPage('admin');
+    document.getElementById('loginErr').style.display='none';
+  } else {
+    document.getElementById('loginErr').style.display='block';
+  }
+}
+
+function switchAdminPanel(name, btn){
+  document.querySelectorAll('.admin-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.querySelectorAll('.admin-nav-item').forEach(n=>n.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  if(name==='orders') renderOrdersTable();
+  if(name==='products') renderProductsTable();
+}
+
+function updateAdminStats(){
+  document.getElementById('statTotal').textContent = orders.length;
+  document.getElementById('statNew').textContent = orders.filter(o=>o.status==='new').length;
+  const rev = orders.reduce((a,o)=>a+o.total,0);
+  document.getElementById('statRevenue').textContent = '৳'+rev.toLocaleString();
+  document.getElementById('statProducts').textContent = products.filter(p=>p.active).length;
+}
+
+function renderOrdersTable(){
+  const search = (document.getElementById('orderSearch')?.value||'').toLowerCase();
+  const filtered = orders.filter(o=>!search || o.name.toLowerCase().includes(search) || o.id.toLowerCase().includes(search));
+  const tbody = document.getElementById('ordersTableBody');
+  if(filtered.length===0){
+    tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;color:rgba(245,240,234,0.2);font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;padding:40px;">No orders yet.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = filtered.map(o=>`
+    <tr>
+      <td class="order-id-cell">#${o.id}</td>
+      <td><div style="font-weight:600">${o.name}</div><div style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(245,240,234,0.3);margin-top:2px">${o.phone}</div></td>
+      <td>${o.items.length} item${o.items.length>1?'s':''}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;">৳${o.total.toLocaleString()}</td>
+      <td>${o.city}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;">${o.payment}</td>
+      <td><span class="status-badge status-${o.status}">${o.status}</span></td>
+      <td>
+        <button class="action-btn-sm" onclick="viewOrder('${o.id}')">View</button>
+        <button class="action-btn-sm del" onclick="deleteOrder('${o.id}')">Del</button>
+      </td>
+    </tr>`).join('');
+  updateAdminStats();
+}
+
+function viewOrder(id){
+  const o = orders.find(x=>x.id===id);
+  if(!o) return;
+  editingOrderId = id;
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-section">
+      <div class="modal-label">Customer</div>
+      <div class="modal-value">${o.name}</div>
+      <div class="modal-label" style="margin-top:8px">Phone</div>
+      <div class="modal-value">${o.phone}</div>
+      ${o.email?`<div class="modal-label" style="margin-top:8px">Email</div><div class="modal-value">${o.email}</div>`:''}
+    </div>
+    <div class="modal-section">
+      <div class="modal-label">Delivery Address</div>
+      <div class="modal-value">${o.address}, ${o.city}${o.postal?' — '+o.postal:''}</div>
+      ${o.notes?`<div class="modal-label" style="margin-top:8px">Notes</div><div class="modal-value">${o.notes}</div>`:''}
+    </div>
+    <div class="modal-section">
+      <div class="modal-label">Items Ordered</div>
+      ${o.items.map(i=>`<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;display:flex;justify-content:space-between;"><span>${i.name} <span style="color:rgba(245,240,234,0.3);font-family:'DM Mono',monospace;font-size:9px">×${i.qty} / ${i.size}</span></span><span style="font-family:'DM Mono',monospace;font-size:10px;color:rgba(245,240,234,0.5)">৳${(i.price*i.qty).toLocaleString()}</span></div>`).join('')}
+      <div style="display:flex;justify-content:space-between;margin-top:10px;font-family:'DM Mono',monospace;font-size:11px;"><span>Delivery</span><span>৳80</span></div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;"><span>Total</span><span style="color:var(--red)">৳${o.total.toLocaleString()}</span></div>
+    </div>
+    <div>
+      <div class="modal-label">Payment Method</div>
+      <div class="modal-value" style="text-transform:uppercase;font-family:'DM Mono',monospace;font-size:11px;">${o.payment}</div>
+      <div class="modal-label" style="margin-top:8px">Order Date</div>
+      <div class="modal-value" style="font-family:'DM Mono',monospace;font-size:11px;">${o.date}</div>
+      <div class="modal-label" style="margin-top:8px">Status</div>
+      <span class="status-badge status-${o.status}">${o.status}</span>
+    </div>`;
+  document.getElementById('orderModal').classList.add('open');
+}
+
+function updateOrderStatus(status){
+  const o = orders.find(x=>x.id===editingOrderId);
+  if(o){ o.status=status; saveData(); renderOrdersTable(); showToast('Status updated to '+status); }
+  document.getElementById('orderModal').classList.remove('open');
+}
+
+function deleteOrder(id){
+  if(!confirm('Delete this order?')) return;
+  orders = orders.filter(o=>o.id!==id);
+  saveData(); renderOrdersTable(); showToast('Order deleted');
+}
+
+function closeOrderModal(e){ if(e.target===document.getElementById('orderModal')) document.getElementById('orderModal').classList.remove('open'); }
+
+// ============================================================
+// PRODUCT MANAGEMENT
+// ============================================================
+function renderProductsTable(){
+  const tbody = document.getElementById('productsTableBody');
+  tbody.innerHTML = products.map(p=>`
+    <tr>
+      <td><div class="product-row-img">${getProductSVGSmall(p)}</div></td>
+      <td><div style="font-weight:600">${p.name}</div>${p.badge?`<span style="font-family:'DM Mono',monospace;font-size:8px;letter-spacing:1px;color:var(--red);text-transform:uppercase;">${p.badge}</span>`:''}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;color:rgba(245,240,234,0.4);">${p.cat}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;">৳${Number(p.price).toLocaleString()}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:9px;color:rgba(245,240,234,0.4);">${p.sizes}</td>
+      <td><button class="toggle-btn ${p.active?'on':''}" onclick="toggleProduct(${p.id})"></button></td>
+      <td>
+        <button class="action-btn-sm" onclick="editProduct(${p.id})">Edit</button>
+        <button class="action-btn-sm del" onclick="deleteProduct(${p.id})">Delete</button>
+      </td>
+    </tr>`).join('');
+}
+
+function toggleProduct(id){
+  const p = products.find(x=>x.id===id);
+  if(p){ p.active=!p.active; saveData(); renderProductsTable(); updateAdminStats(); }
+}
+
+function editProduct(id){
+  const p = products.find(x=>x.id===id);
+  if(!p) return;
+  document.getElementById('editProductId').value = id;
+  document.getElementById('p_name').value = p.name;
+  document.getElementById('p_cat').value = p.cat;
+  document.getElementById('p_price').value = p.price;
+  document.getElementById('p_badge').value = p.badge||'';
+  document.getElementById('p_sizes').value = p.sizes;
+  document.getElementById('p_stock').value = p.stock||'';
+  document.getElementById('p_desc').value = p.desc||'';
+  document.getElementById('p_img').value = p.img||'';
+  document.getElementById('addProductTitle').textContent = 'Edit Product';
+  switchAdminPanel('addproduct', null);
+}
+
+function deleteProduct(id){
+  if(!confirm('Delete this product? This cannot be undone.')) return;
+  products = products.filter(p=>p.id!==id);
+  saveData(); renderProductsTable(); updateAdminStats(); showToast('Product deleted');
+}
+
+function saveProduct(){
+  const name = document.getElementById('p_name').value.trim();
+  const price = document.getElementById('p_price').value;
+  if(!name||!price){ showToast('Name and price are required ✕'); return; }
+  const editId = document.getElementById('editProductId').value;
+  const data = {
+    name,
+    cat: document.getElementById('p_cat').value,
+    price: Number(price),
+    badge: document.getElementById('p_badge').value.trim(),
+    sizes: document.getElementById('p_sizes').value||'S,M,L,XL',
+    stock: Number(document.getElementById('p_stock').value)||0,
+    desc: document.getElementById('p_desc').value.trim(),
+    img: document.getElementById('p_img').value.trim(),
+    active: true
+  };
+  if(editId){
+    const idx = products.findIndex(p=>p.id===Number(editId));
+    if(idx>-1){ products[idx]={...products[idx],...data}; showToast('Product updated!'); }
+  } else {
+    data.id = Date.now();
+    products.push(data);
+    showToast('Product added!');
+  }
+  saveData();
+  resetProductForm();
+  switchAdminPanel('products', null);
+  renderProductsTable();
+  updateAdminStats();
+}
+
+function resetProductForm(){
+  ['p_name','p_price','p_badge','p_sizes','p_stock','p_desc','p_img'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('editProductId').value='';
+  document.getElementById('p_cat').value='jersey';
+  document.getElementById('addProductTitle').textContent='Add Product';
+}
+
+// ============================================================
+// UI UTILS
+// ============================================================
+function showToast(msg){
+  const t=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// CURSOR
+const cursor=document.getElementById('cursor');
+const ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+(function animateRing(){rx+=(mx-rx)*0.13;ry+=(my-ry)*0.13;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animateRing);})();
+document.addEventListener('mouseover',e=>{
+  if(e.target.matches('a,button,.cat-pill,.product-card,.payment-method,.filter-tab')){
+    cursor.style.transform='translate(-50%,-50%) scale(1.8)';
+    ring.style.transform='translate(-50%,-50%) scale(1.6)';
+  } else {
+    cursor.style.transform='translate(-50%,-50%) scale(1)';
+    ring.style.transform='translate(-50%,-50%) scale(1)';
+  }
+});
+
+// NAV scroll
+window.addEventListener('scroll',()=>{
+  document.getElementById('mainNav').classList.toggle('nav-scrolled',window.scrollY>50);
+});
+
+// Scroll reveal
+const revealObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');revealObs.unobserve(e.target);}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(r=>revealObs.observe(r));
+
+// INIT
+renderProducts();
+</script>
+</body>
+</html>
